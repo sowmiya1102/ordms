@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ordms/view/auth/signup_screen.dart';
 import 'package:ordms/view/home/home_screen.dart';
 import 'package:ordms/viewmodels/auth_view_model.dart';
+import 'package:ordms/viewmodels/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -21,13 +22,16 @@ class MyApp extends StatelessWidget {
       title: 'IMedha ORDMS',
       debugShowCheckedModeBanner: false,
       home: MultiProvider(providers: [
-        ChangeNotifierProvider(create: (_) => AuthViewModel())
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel())
       ],
       child: Consumer<AuthViewModel>(
           builder: (context, authVM, child) {
-            return authVM.isAuthenticated
-            ? HomeScreen()
-            : SignupScreen();
+            return 
+            // authVM.isAuthenticated
+            // ? 
+            HomeScreen();
+            // : SignupScreen();
           },
         ),
       ),
