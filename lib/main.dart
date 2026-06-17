@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ordms/view/auth/signup_screen.dart';
+import 'package:ordms/view/home/home_screen.dart';
 import 'package:ordms/viewmodels/auth_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,14 @@ class MyApp extends StatelessWidget {
       home: MultiProvider(providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel())
       ],
-      child: SignupScreen(),),
+      child: Consumer<AuthViewModel>(
+          builder: (context, authVM, child) {
+            return authVM.isAuthenticated
+            ? HomeScreen()
+            : SignupScreen();
+          },
+        ),
+      ),
     );
   }
 }

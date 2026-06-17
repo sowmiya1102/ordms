@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ordms/view/home/home_screen.dart';
 import 'package:ordms/viewmodels/auth_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +32,19 @@ class  _SignupScreenState extends State<SignupScreen> {
                   : InkWell(
                   onTap: () async {
                     final auth = await context.read<AuthViewModel>().googleLogin();
+
+                    if (auth) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Error occurred while signing in. Please try again."),
+                        ),
+                      );
+                    }
                   },
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
