@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ordms/viewmodels/order_view_model.dart';
+import 'package:provider/provider.dart';
 
 class CreateOrder extends StatefulWidget {
   const CreateOrder({super.key});
@@ -11,9 +13,8 @@ class _CreateOrderState extends State<CreateOrder> {
   String? selectedItem;
   var orderItems = [
       'Lights',
-      'Decoration',
       'Tents',
-      'Bedding',
+      'Chairs',
   ];
   final TextEditingController orderItemController = TextEditingController();
   final TextEditingController itemNameController = TextEditingController();
@@ -280,31 +281,97 @@ class _CreateOrderState extends State<CreateOrder> {
                   child: SizedBox(
                     width: double.infinity,
                     height: 55,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          // Save order
-                        }
+                    child: Selector<OrderViewModel, bool>(
+                      selector: (_, vm) => vm.isLoading,
+                      builder: (context, isLoading, child) {
+                        return ElevatedButton.icon(
+                          onPressed: isLoading
+                              ? null
+                              : () async {
+                                  if (!_formKey.currentState!.validate()) {
+                                    return;
+                                  }
+
+                                  if (selectedItem == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Please select an order item"),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  final success =
+                                      await context.read<OrderViewModel>().createOrder(
+                                            orderItem: selectedItem!,
+                                            itemName: itemNameController.text.trim(),
+                                            quantity:
+                                                int.parse(quantityController.text.trim()),
+                                            customerName:
+                                                customerNameController.text.trim(),
+                                            phone: phoneController.text.trim(),
+                                            location: locationController.text.trim(),
+                                            eventDate: eventDateController.text,
+                                            eventTime: eventTimeController.text,
+                                            notes: notesController.text.trim(),
+                                            status: 0,
+                                          );
+
+                                  if (!context.mounted) return;
+
+                                  if (success) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Order Created Successfully"),
+                                      ),
+                                    );
+
+                                    _formKey.currentState!.reset();
+
+                                    itemNameController.clear();
+                                    quantityController.clear();
+                                    customerNameController.clear();
+                                    phoneController.clear();
+                                    locationController.clear();
+                                    eventDateController.clear();
+                                    eventTimeController.clear();
+                                    notesController.clear();
+
+                                    setState(() {
+                                      selectedItem = null;
+                                    });
+                                  }
+                                },
+                          icon: isLoading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Icon(Icons.save_outlined),
+                          label: Text(
+                            isLoading ? "Saving..." : "Save Order",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        );
                       },
-                      icon: const Icon(Icons.save_outlined),
-                      label: const Text(
-                        "Save Order",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),

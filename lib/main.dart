@@ -4,6 +4,7 @@ import 'package:ordms/view/auth/signup_screen.dart';
 import 'package:ordms/view/home/home_screen.dart';
 import 'package:ordms/viewmodels/auth_view_model.dart';
 import 'package:ordms/viewmodels/home_view_model.dart';
+import 'package:ordms/viewmodels/order_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -15,23 +16,21 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'IMedha ORDMS',
-      debugShowCheckedModeBanner: false,
-      home: MultiProvider(providers: [
+    return MultiProvider(
+      providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
-        ChangeNotifierProvider(create: (_) => HomeViewModel())
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => OrderViewModel()),
       ],
-      child: Consumer<AuthViewModel>(
+      child: MaterialApp(
+        title: 'IMedha ORDMS',
+        debugShowCheckedModeBanner: false,
+        home: Consumer<AuthViewModel>(
           builder: (context, authVM, child) {
-            return 
-            // authVM.isAuthenticated
-            // ? 
-            HomeScreen();
-            // : SignupScreen();
+            return HomeScreen();
+            // return authVM.isAuthenticated ? HomeScreen() : SignupScreen();
           },
         ),
       ),
