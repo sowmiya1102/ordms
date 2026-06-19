@@ -1,16 +1,47 @@
+import 'package:hive/hive.dart';
+
+part 'create_order_model.g.dart'; // ← required for code generation
+
+@HiveType(typeId: 0)
 class CreateOrderModel {
+
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String orderItem;
+
+  @HiveField(2)
   final String itemName;
+
+  @HiveField(3)
   final int quantity;
+
+  @HiveField(4)
   final String ordStatus;
+
+  @HiveField(5)
   final String customerName;
+
+  @HiveField(6)
   final String phone;
+
+  @HiveField(7)
   final String location;
+
+  @HiveField(8)
   final String eventDate;
+
+  @HiveField(9)
   final String eventTime;
+
+  @HiveField(10)
   final String notes;
+
+  @HiveField(11)
   final DateTime createdAt;
+
+  @HiveField(12)
   final int status;
 
   CreateOrderModel({
@@ -26,7 +57,7 @@ class CreateOrderModel {
     required this.eventTime,
     required this.notes,
     required this.createdAt,
-    required this.status
+    required this.status,
   });
 
   factory CreateOrderModel.fromJson(Map<String, dynamic> json) {
@@ -43,7 +74,7 @@ class CreateOrderModel {
       eventTime: json['eventTime'] ?? '',
       notes: json['notes'] ?? '',
       createdAt: DateTime.parse(json['createdAt']),
-      status: json['status'] ?? 0
+      status: json['status'] ?? 0,
     );
   }
 
@@ -61,7 +92,7 @@ class CreateOrderModel {
       'eventTime': eventTime,
       'notes': notes,
       'createdAt': createdAt.toIso8601String(),
-      'status': status
+      'status': status,
     };
   }
 }

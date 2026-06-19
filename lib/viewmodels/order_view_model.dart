@@ -18,12 +18,27 @@ class OrderViewModel extends ChangeNotifier {
   List<CreateOrderModel> orderFilterList = [];
 
   CreateOrderModel? orderData;
-
   int selectedIndex = 0;
-
   String selectedCategory = "All";
-
   TextEditingController searchController = TextEditingController();
+
+  int get totalOrders => orderList.length;
+  int get pendingOrders => orderList.where((e) => e.status == "Pending").length;
+  int get completedOrders => orderList.where((e) => e.status == "Completed").length;
+  int get cancelledOrders => orderList.where((e) => e.status == "Cancelled").length;
+  List<CreateOrderModel> get recentOrders => [...orderList].reversed.take(5).toList();
+
+  List<CreateOrderModel> get todayOrders {
+    final today = DateTime.now();
+
+    return orderList.where((order) {
+      final date = DateTime.parse(order.eventDate).toLocal();
+
+      return date.year == today.year &&
+          date.month == today.month &&
+          date.day == today.day;
+    }).toList();
+  }
 
   Future<bool> createOrder({
     required String orderItem,

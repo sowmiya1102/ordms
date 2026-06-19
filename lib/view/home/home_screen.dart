@@ -13,11 +13,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  final List<Widget> _screens = const [ 
+  final List<Widget> _screens = [ 
     // CustomersScreen(),
     DashboardScreen(),
-    OrdersScreen(),
-    Text("customers")
+    const OrdersScreen(),
+    const Text("customers")
   ];
 
   @override

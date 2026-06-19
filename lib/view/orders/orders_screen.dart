@@ -220,20 +220,20 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   children: [
                                     Expanded(
                                       child: Column(
-                                        mainAxisAlignment: .start,
-                                        crossAxisAlignment: .start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(orders.customerName,
                                           style: TextStyle(
                                             fontSize: 14,
-                                            fontWeight: .w600
+                                            fontWeight: FontWeight.w600
                                           ),
                                           ),
                                           const SizedBox(height: 4,),
                                           Text('${orders.quantity} ${orders.itemName}',
                                           style: TextStyle(
                                             fontSize: 14,
-                                            fontWeight: .w600
+                                            fontWeight: FontWeight.w600
                                           ),),
                                         ],
                                       ),
@@ -250,14 +250,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                           ),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: .circular(20)
+                                            borderRadius: BorderRadius.circular(20)
                                           ),
                                           child: Text(
                                             orders.eventDate,
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                             ),
-                                            textAlign: .center,
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                         const SizedBox(height: 8),
@@ -277,9 +277,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                             orders.ordStatus,
                                             style: const TextStyle(
                                               color: Colors.white,
-                                              fontWeight: .w600
+                                              fontWeight: FontWeight.w600
                                             ),
-                                            textAlign: .center,
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ],

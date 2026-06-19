@@ -6,10 +6,12 @@ class AuthViewModel extends ChangeNotifier {
 
   bool _isLoading = false;
   String? _errorMessage;
+  String? _userName;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _repo.isAuthenticated;
+  String? get userName => _userName;
 
   Future<bool> googleLogin() async {
     _isLoading = true;
@@ -22,7 +24,7 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
 
       if (user != null) {
-        // AppLogger.auth('Google sign-in succeeded for ${user.email}');
+        _userName = user.displayName;
         return true;
       } else {
         // AppLogger.auth('Google sign-in cancelled by user');

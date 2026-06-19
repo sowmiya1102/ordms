@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ordms/viewmodels/order_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -84,21 +85,21 @@ class _CreateOrderState extends State<CreateOrder> {
             return Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment: .center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     child: Text("Order Creation",
                     style: TextStyle(
                       fontSize: 22,
-                      fontWeight: .w600
+                      fontWeight: FontWeight.w600
                     ),),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
                     child: DropdownMenu<String>(
                       controller: orderItemController,
-                      width: .infinity,
+                      width: double.infinity,
                       label: const Text("Order Item"),
                       initialSelection: orderItems.first,
                       onSelected: (value) {
@@ -263,8 +264,7 @@ class _CreateOrderState extends State<CreateOrder> {
                         );
               
                         if (picked != null) {
-                          eventDateController.text =
-                              "${picked.day}/${picked.month}/${picked.year}";
+                          eventDateController.text = DateFormat('yyyy-MM-dd').format(picked);
                         }
                       },
                     ),
