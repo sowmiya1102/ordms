@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ordms/view/dashboard_screen.dart';
+import 'package:ordms/view/dashboard/dashboard_screen.dart';
 import 'package:ordms/view/orders/orders_screen.dart';
 import 'package:ordms/viewmodels/home_view_model.dart';
 import 'package:provider/provider.dart';

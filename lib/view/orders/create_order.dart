@@ -87,6 +87,23 @@ class _CreateOrderState extends State<CreateOrder> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  if (vm.isOffline)
+                    Container(
+                      width: double.infinity,
+                      color: Colors.red.shade100,
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.wifi_off, size: 16, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text(
+                            "You're offline. Cannot create orders.",
+                            style: TextStyle(color: Colors.red, fontSize: 13),
+                          ),
+                        ],
+                      ),
+                    ),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     child: Text("Order Creation",

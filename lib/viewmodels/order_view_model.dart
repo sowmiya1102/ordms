@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:ordms/data/models/create_order_model.dart';
 import 'package:ordms/data/repositories/order_repository.dart';
 
 class OrderViewModel extends ChangeNotifier {
   final OrderRepository _repository = OrderRepository();
+  final Box<CreateOrderModel> orderBox = Hive.box<CreateOrderModel>('orders');
 
   bool isLoading = false;
   bool isLoading1 = false;
@@ -12,6 +15,7 @@ class OrderViewModel extends ChangeNotifier {
   bool isLoading3 = false;
   bool isLoading4 = false;
   bool isSearch = false;
+  bool isOffline = false;
 
   List<String> categories = ["Pending", "Completed", "Cancelled", "All"];
   List<CreateOrderModel> orderList = [];
@@ -23,14 +27,14 @@ class OrderViewModel extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
 
   int get totalOrders => orderList.length;
-  int get pendingOrders => orderList.where((e) => e.status == "Pending").length;
-  int get completedOrders => orderList.where((e) => e.status == "Completed").length;
-  int get cancelledOrders => orderList.where((e) => e.status == "Cancelled").length;
+  int get pendingOrders => orderList.where((e) => e.ordStatus.toLowerCase() == "pending").length;
+  int get completedOrders => orderList.where((e) => e.ordStatus.toLowerCase() == "completed").length;
+  int get cancelledOrders => orderList.where((e) => e.ordStatus.toLowerCase() == "cancelled").length;
   List<CreateOrderModel> get recentOrders => [...orderList].reversed.take(5).toList();
 
   List<CreateOrderModel> get todayOrders {
     final today = DateTime.now();
-
+ 
     return orderList.where((order) {
       final date = DateTime.parse(order.eventDate).toLocal();
 
@@ -38,6 +42,11 @@ class OrderViewModel extends ChangeNotifier {
           date.month == today.month &&
           date.day == today.day;
     }).toList();
+  }
+
+  Future<bool> isOnline() async {
+    final result = await Connectivity().checkConnectivity();
+    return result != ConnectivityResult.none;
   }
 
   Future<bool> createOrder({
@@ -92,12 +101,25 @@ class OrderViewModel extends ChangeNotifier {
       isLoading1 = true;
       notifyListeners();
 
-      final orders = await _repository.getOrders();
+      final online = await isOnline();
 
-      orderList = orders.where((order) => order.status == 1).toList();
-      orderFilterList = List.from(orderList);
+      if (online) {
+        final remoteOrders = await _repository.getOrders();
 
-      print("order list data: $orderList");
+        orderList = remoteOrders.where((o) => o.status == 1).toList();
+        orderFilterList = List.from(orderList);
+
+        isOffline = false;
+
+        for (var order in orderList) {
+          orderBox.put(order.id, order);
+        }
+      } else {
+        orderList = orderBox.values.toList();
+        orderFilterList = List.from(orderList);
+        isOffline = true;
+      }
+
       return true;
     } catch (e) {
       debugPrint(e.toString());

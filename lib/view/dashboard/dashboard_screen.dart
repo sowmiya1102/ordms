@@ -22,54 +22,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-  final List<Map<String, String>> todayOrders = [
-    {
-      "order": "#101",
-      "customer": "John",
-      "item": "Wedding Lights",
-      "status": "Pending",
-    },
-    {
-      "order": "#102",
-      "customer": "David",
-      "item": "Stage Decoration",
-      "status": "Completed",
-    },
-    {
-      "order": "#103",
-      "customer": "Alex",
-      "item": "Sound System",
-      "status": "Pending",
-    },
-  ];
-
-  final List<Map<String, String>> recentOrders = [
-    {
-      "order": "#104",
-      "customer": "Smith",
-      "item": "Tent",
-      "status": "Completed",
-    },
-    {
-      "order": "#105",
-      "customer": "Robert",
-      "item": "Chair Set",
-      "status": "Pending",
-    },
-    {
-      "order": "#106",
-      "customer": "James",
-      "item": "LED Wall",
-      "status": "Cancelled",
-    },
-    {
-      "order": "#107",
-      "customer": "William",
-      "item": "Flower Decoration",
-      "status": "Completed",
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +39,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: const EdgeInsets.all(16),
         child: Consumer<OrderViewModel>(
           builder: (context, vm, child) {
+            if(vm.isLoading1) {
+              return Center(child: CircularProgressIndicator(strokeWidth: 1.0,),);
+            }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -243,7 +198,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     margin: const EdgeInsets.only(bottom: 12),
                     child: ListTile(
                       leading: const CircleAvatar(
-                        backgroundColor: Colors.deepPurple,
+                        backgroundColor: Colors.blue,
                         child: Icon(
                           Icons.shopping_cart,
                           color: Colors.white,
