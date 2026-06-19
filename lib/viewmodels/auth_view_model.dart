@@ -27,11 +27,9 @@ class AuthViewModel extends ChangeNotifier {
         _userName = user.displayName;
         return true;
       } else {
-        // AppLogger.auth('Google sign-in cancelled by user');
         return false;
       }
     } catch (e) {
-      // AppLogger.error('Auth', 'Google sign-in failed', e);
       _isLoading = false;
       _errorMessage = e.toString();
       notifyListeners();
@@ -41,7 +39,6 @@ class AuthViewModel extends ChangeNotifier {
 
   Future<bool> signOut() async {
     await _repo.signOut();
-    // AppLogger.auth('User signed out');
     notifyListeners();
     return true;
   }

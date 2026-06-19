@@ -104,14 +104,27 @@ class _CreateOrderState extends State<CreateOrder> {
                       ),
                     ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    child: Text("Order Creation",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600
-                    ),),
+                 Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      const SizedBox(width: 4),
+                      const Text(
+                        "Order Creation",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
+                ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
                     child: DropdownMenu<String>(

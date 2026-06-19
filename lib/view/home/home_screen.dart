@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ordms/view/dashboard/dashboard_screen.dart';
+import 'package:ordms/view/insights/insights_screen.dart';
 import 'package:ordms/view/orders/orders_screen.dart';
 import 'package:ordms/viewmodels/home_view_model.dart';
 import 'package:provider/provider.dart';
@@ -14,10 +15,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [ 
-    // CustomersScreen(),
     DashboardScreen(),
     const OrdersScreen(),
-    const Text("customers")
+    InsightsScreen()
   ];
 
   @override
@@ -80,9 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   label: "Orders",
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.people_outline),
-                  activeIcon: Icon(Icons.people),
-                  label: "Customers",
+                  icon: Icon(Icons.insights_outlined),
+                  activeIcon: Icon(Icons.insights),
+                  label: "Insights",
                 ),
               ],
             )

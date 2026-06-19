@@ -5,19 +5,18 @@ class UserService {
   final _db = FirebaseFirestore.instance;
 
   Future<void> saveUser(UserModel user) async {
-    await _db.collection('users')
-    .doc(user.uid)
-    .set(user.toMap(), SetOptions(merge: true));
+    await _db
+        .collection('users')
+        .doc(user.uid)
+        .set(user.toJson(), SetOptions(merge: true));
   }
 
-  Future<void> updatePickStatus({
+  Future<void> updateSubscription({
     required String uid,
-    required String role,
-    required List<String> needs,
+    required bool isSubscribed,
   }) async {
     await _db.collection('users').doc(uid).update({
-      'role': role,
-      'needs': needs,
+      'isSubscribed': isSubscribed,
     });
   }
 }

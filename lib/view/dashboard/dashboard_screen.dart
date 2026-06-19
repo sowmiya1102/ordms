@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ordms/view/auth/signup_screen.dart';
+import 'package:ordms/viewmodels/auth_view_model.dart';
 import 'package:ordms/viewmodels/order_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +36,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              context.read<AuthViewModel>().signOut();
+
+              if (!context.mounted) return;
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const SignupScreen()),
+                (route) => false,
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

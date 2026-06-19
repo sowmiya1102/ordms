@@ -25,4 +25,8 @@ class OrderRepository {
   Future<CreateOrderModel> getOrder(String id) {
     return _service.getOrder(id);
   }
+
+  Future<void> updateOrderStatus(String id, String ordStatus) {
+    return _service.updateOrderStatus(id, ordStatus);
+  }
 }

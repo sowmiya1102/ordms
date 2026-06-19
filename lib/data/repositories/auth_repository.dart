@@ -14,11 +14,8 @@ class AuthRepository {
     if (user != null) {
       final userModel = UserModel(
         uid: user.uid,
-        email: user.email ?? '',
         name: user.displayName ?? '',
-        role: '',
-        needs: [],
-        createdAt: DateTime.now(),
+        isSubscribed: false,
       );
       await _userService.saveUser(userModel);
     }
@@ -30,7 +27,4 @@ class AuthRepository {
 
   /// Whether a user is currently authenticated.
   bool get isAuthenticated => FirebaseAuth.instance.currentUser != null;
-
-  /// The currently signed-in user, or `null`.
-  User? get currentUser => FirebaseAuth.instance.currentUser;
 }

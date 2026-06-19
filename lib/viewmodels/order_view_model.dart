@@ -14,6 +14,7 @@ class OrderViewModel extends ChangeNotifier {
   bool isLoading2 = false;
   bool isLoading3 = false;
   bool isLoading4 = false;
+  bool isLoading5 = false;
   bool isSearch = false;
   bool isOffline = false;
 
@@ -47,6 +48,30 @@ class OrderViewModel extends ChangeNotifier {
   Future<bool> isOnline() async {
     final result = await Connectivity().checkConnectivity();
     return result != ConnectivityResult.none;
+  }
+
+  Map<String, int> get popularItems {
+    final Map<String, int> data = {};
+
+    for (var order in orderList) {
+      final key = order.orderItem.trim();
+
+      data[key] = (data[key] ?? 0) + 1;
+    }
+
+    return data;
+  }
+
+  List<Map<String, dynamic>> get popularItemsChart {
+    final items = popularItems.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return items.map((e) {
+      return {
+        "item": e.key,
+        "count": e.value,
+      };
+    }).toList();
   }
 
   Future<bool> createOrder({
@@ -210,6 +235,24 @@ class OrderViewModel extends ChangeNotifier {
       return false;
     } finally {
       isLoading4 = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> orderStatusUpdate(String id, String ordStatus) async {
+    try {
+      isLoading5 = true;
+      notifyListeners();
+
+      await _repository.updateOrderStatus(id, ordStatus);
+      await getOrdersList();
+
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    } finally {
+      isLoading5 = false;
       notifyListeners();
     }
   }

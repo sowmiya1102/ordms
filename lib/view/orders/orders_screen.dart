@@ -214,160 +214,240 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               color: Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                            child: InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      title: Text("Order Details"),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(orders.customerName,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600
+
+                                          Text("Customer Name: ${orders.customerName}"),
+                                          Text("Phone: ${orders.phone}"),
+                                          Text("Location: ${orders.location}"),
+                                          const Divider(),
+
+                                          Text("Item: ${orders.itemName}"),
+                                          Text("Order Item: ${orders.orderItem}"),
+                                          Text("Quantity: ${orders.quantity}"),
+                                          const Divider(),
+
+                                          Text("Event Date: ${orders.eventDate}"),
+                                          Text("Event Time: ${orders.eventTime}"),
+                                          const Divider(),
+
+                                          DropdownButtonFormField<String>(
+                                            value: orders.ordStatus,
+                                            decoration: const InputDecoration(
+                                              labelText: "Update Status",
+                                              border: OutlineInputBorder(),
+                                            ),
+                                            items: const [
+                                              DropdownMenuItem(
+                                                value: "pending",
+                                                child: Text("Pending"),
+                                              ),
+                                              DropdownMenuItem(
+                                                value: "completed",
+                                                child: Text("Completed"),
+                                              ),
+                                              DropdownMenuItem(
+                                                value: "cancelled",
+                                                child: Text("Cancelled"),
+                                              ),
+                                            ],
+                                            onChanged: (newValue) async {
+                                              if (newValue == null) return;
+
+                                              // 1. Update locally (UI)
+                                              context.read<OrderViewModel>().orderStatusUpdate(
+                                                orders.id,
+                                                newValue,
+                                              );
+
+                                              // 2. Close dialog (optional)
+                                              Navigator.pop(context);
+                                            },
                                           ),
-                                          ),
-                                          const SizedBox(height: 4,),
-                                          Text('${orders.quantity} ${orders.itemName}',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600
-                                          ),),
+
+                                          const Divider(),
+
+                                          Text("Notes: ${orders.notes.isEmpty ? "No notes" : orders.notes}"),
+                                          const SizedBox(height: 6),
                                         ],
                                       ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          width: 140,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20)
-                                          ),
-                                          child: Text(
-                                            orders.eventDate,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: const Text("Close"),
                                         ),
-                                        const SizedBox(height: 8),
-                                        Container(
-                                          width: 140,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: orders.ordStatus == "pending" ? Colors.amber
-                                            : orders.ordStatus == "completed" ? Colors.green
-                                            : Colors.red,
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                          child: Text(
-                                            orders.ordStatus,
-                                            style: const TextStyle(
-                                              color: Colors.white,
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(orders.customerName,
+                                            style: TextStyle(
+                                              fontSize: 14,
                                               fontWeight: FontWeight.w600
                                             ),
-                                            textAlign: TextAlign.center,
-                                          ),
+                                            ),
+                                            const SizedBox(height: 4,),
+                                            Text('${orders.quantity} ${orders.itemName}',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600
+                                            ),),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                    const SizedBox(width: 8,),
-                                    PopupMenuButton<String>(
-                                      // onSelected: (value) {
-                                      //   if (value == 'edit') {
-                                      //     // Edit action
-                                      //   } else if (value == 'delete') {
-                                      //     // Delete action
-                                      //   }
-                                      // },
-                                      itemBuilder: (context) => [
-                                        PopupMenuItem(
-                                          value: 'edit',
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => CreateOrder(isEdit: true, id: orders.id,)),
-                                              );
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.edit, size: 20),
-                                                SizedBox(width: 8),
-                                                Text('Edit'),
-                                              ],
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: 140,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(20)
+                                            ),
+                                            child: Text(
+                                              orders.eventDate,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              textAlign: TextAlign.center,
                                             ),
                                           ),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 'delete',
-                                          child: InkWell(
-                                            onTap: () async {
-                                              Navigator.pop(context);
-                                              await showDialog(
-                                                context: context,
-                                                builder: (ctx) => AlertDialog(
-                                                  title: const Text("Delete Order"),
-                                                  content: const Text("Do You really want to delete this order?"),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(ctx).pop();
-                                                      },
-                                                      child: const Text("No"),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () async {
-                                                        Navigator.pop(ctx);
-      
-                                                        await context
-                                                            .read<OrderViewModel>()
-                                                            .deleteOrder(orders.id!);
-      
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          const SnackBar(
-                                                            content: Text("Order deleted successfully"),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: const Text("Yes"),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.delete, color: Colors.red, size: 20),
-                                                SizedBox(width: 8),
-                                                Text(
-                                                  'Delete',
-                                                  style: TextStyle(color: Colors.red),
-                                                ),
-                                              ],
+                                          const SizedBox(height: 8),
+                                          Container(
+                                            width: 140,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: orders.ordStatus == "pending" ? Colors.amber
+                                              : orders.ordStatus == "completed" ? Colors.green
+                                              : Colors.red,
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: Text(
+                                              orders.ordStatus,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600
+                                              ),
+                                              textAlign: TextAlign.center,
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                      child: const Icon(Icons.more_vert),
-                                    )
-                                  ],
-                                ),
-                              ],
+                                        ],
+                                      ),
+                                      const SizedBox(width: 8,),
+                                      PopupMenuButton<String>(
+                                        // onSelected: (value) {
+                                        //   if (value == 'edit') {
+                                        //     // Edit action
+                                        //   } else if (value == 'delete') {
+                                        //     // Delete action
+                                        //   }
+                                        // },
+                                        itemBuilder: (context) => [
+                                          PopupMenuItem(
+                                            value: 'edit',
+                                            child: InkWell(
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => CreateOrder(isEdit: true, id: orders.id,)),
+                                                );
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.edit, size: 20),
+                                                  SizedBox(width: 8),
+                                                  Text('Edit'),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'delete',
+                                            child: InkWell(
+                                              onTap: () async {
+                                                Navigator.pop(context);
+                                                await showDialog(
+                                                  context: context,
+                                                  builder: (ctx) => AlertDialog(
+                                                    title: const Text("Delete Order"),
+                                                    content: const Text("Do You really want to delete this order?"),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(ctx).pop();
+                                                        },
+                                                        child: const Text("No"),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.pop(ctx);
+                                    
+                                                          await context
+                                                              .read<OrderViewModel>()
+                                                              .deleteOrder(orders.id!);
+                                    
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            const SnackBar(
+                                                              content: Text("Order deleted successfully"),
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: const Text("Yes"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.delete, color: Colors.red, size: 20),
+                                                  SizedBox(width: 8),
+                                                  Text(
+                                                    'Delete',
+                                                    style: TextStyle(color: Colors.red),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                        child: const Icon(Icons.more_vert),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },

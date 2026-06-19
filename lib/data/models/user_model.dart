@@ -1,39 +1,39 @@
 class UserModel {
   final String uid;
-  final String name;
-  final String email;
-  final String role;
-  final List<String> needs;
-  final DateTime createdAt;
+  final String? name;
+  final bool isSubscribed;
 
   UserModel({
     required this.uid,
-    required this.name,
-    required this.email,
-    required this.role,
-    required this.needs,
-    required this.createdAt,
+    this.name,
+    required this.isSubscribed,
   });
 
-  factory UserModel.fromMap(Map<String, dynamic> map) {
+  factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      uid: map['uid'] ?? '',
-      name: map['name'] ?? '',
-      email: map['email'] ?? '',
-      role: map['role'] ?? '',
-      needs: List<String>.from(map['needs'] ?? []),
-      createdAt: DateTime.parse(map['createdAt'] ?? DateTime.now().toIso8601String()),
+      uid: json['uid'] ?? '',
+      name: json['name'],
+      isSubscribed: json['isSubscribed'] ?? false,
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'uid': uid,
       'name': name,
-      'email': email,
-      'role': role,
-      'needs': needs,
-      'createdAt': createdAt.toIso8601String(),
+      'isSubscribed': isSubscribed,
     };
+  }
+
+  UserModel copyWith({
+    String? uid,
+    String? name,
+    bool? isSubscribed,
+  }) {
+    return UserModel(
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      isSubscribed: isSubscribed ?? this.isSubscribed,
+    );
   }
 }
