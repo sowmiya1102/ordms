@@ -11,27 +11,20 @@ class OrderService {
         .set(order.toJson());
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getOrder(String id) async {
-    return await _firestore
-        .collection('orders')
-        .doc(id)
-        .get();
+  Future<CreateOrderModel> getOrder(String id) async {
+    final response = await _firestore.collection('orders').doc(id).get();
+    
+    return CreateOrderModel.fromJson(response.data()!);
   }
 
-  // Future<List<CreateOrderModel>> getOrders() async {
-  //   final snapshot = await _firestore.collection('orders').get();
+  Future<List<CreateOrderModel>> getOrders() async {
+    final response = await _firestore.collection('orders').get();
 
-  //   return snapshot.docs
-  //       .map((doc) => CreateOrderModel.fromJson(doc.data()))
-  //       .toList();
-  // }
-
-  Future<QuerySnapshot<Map<String, dynamic>>> getOrders() async {
-    return await _firestore
-        .collection('orders')
-        .orderBy('createdAt', descending: true)
-        .get();
+    return response.docs
+        .map((doc) => CreateOrderModel.fromJson(doc.data()))
+        .toList();
   }
+
 
   Future<void> updateOrder(CreateOrderModel order) async {
     await _firestore
@@ -44,6 +37,6 @@ class OrderService {
     await _firestore
         .collection('orders')
         .doc(id)
-        .delete();
+        .update({'status': -1});
   }
 }

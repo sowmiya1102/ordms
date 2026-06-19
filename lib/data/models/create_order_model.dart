@@ -3,6 +3,7 @@ class CreateOrderModel {
   final String orderItem;
   final String itemName;
   final int quantity;
+  final String ordStatus;
   final String customerName;
   final String phone;
   final String location;
@@ -17,6 +18,7 @@ class CreateOrderModel {
     required this.orderItem,
     required this.itemName,
     required this.quantity,
+    required this.ordStatus,
     required this.customerName,
     required this.phone,
     required this.location,
@@ -33,6 +35,7 @@ class CreateOrderModel {
       orderItem: json['orderItem'] ?? '',
       itemName: json['itemName'] ?? '',
       quantity: json['quantity'] ?? 0,
+      ordStatus: json['ordStatus'] ?? '',
       customerName: json['customerName'] ?? '',
       phone: json['phone'] ?? '',
       location: json['location'] ?? '',
@@ -50,6 +53,7 @@ class CreateOrderModel {
       'orderItem': orderItem,
       'itemName': itemName,
       'quantity': quantity,
+      'ordStatus': ordStatus,
       'customerName': customerName,
       'phone': phone,
       'location': location,

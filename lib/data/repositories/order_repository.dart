@@ -18,11 +18,11 @@ class OrderRepository {
     return _service.deleteOrder(id);
   }
 
-  Future getOrders() {
+  Future<List<CreateOrderModel>> getOrders() {
     return _service.getOrders();
   }
 
-  Future getOrder(String id) {
+  Future<CreateOrderModel> getOrder(String id) {
     return _service.getOrder(id);
   }
 }
