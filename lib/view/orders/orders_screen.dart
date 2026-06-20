@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ordms/data/models/create_order_model.dart';
 import 'package:ordms/view/orders/create_order.dart';
 import 'package:ordms/viewmodels/order_view_model.dart';
 import 'package:provider/provider.dart';
@@ -19,13 +18,21 @@ class _OrdersScreenState extends State<OrdersScreen> {
   void initState() {
     super.initState();
 
-     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<OrderViewModel>().getOrdersList();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final vm = context.read<OrderViewModel>();
+      await vm.init();
+      await vm.getOrdersList();
     });
 
     // Future.microtask(() {
     //   context.read<OrderViewModel>().getOrdersList();
     // });
+  }
+
+  @override
+  void dispose() {
+    context.read<OrderViewModel>().disposeConnectivity();
+    super.dispose();
   }
 
   @override
@@ -216,6 +223,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             ),
                             child: InkWell(
                               onTap: () {
+                                final vm = context.read<OrderViewModel>();
+                                final online = !vm.isOffline;
+
                                 showDialog(
                                   context: context,
                                   builder: (context) {
@@ -224,7 +234,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       title: Text("Order Details"),
-                                      content: Column(
+                                      content: online ?
+                                      Column(
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
@@ -282,7 +293,25 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                           Text("Notes: ${orders.notes.isEmpty ? "No notes" : orders.notes}"),
                                           const SizedBox(height: 6),
                                         ],
-                                      ),
+                                      ) : Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.wifi_off, size: 50, color: Colors.red),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              "No Internet Connection",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text(
+                                              "Please check your network and try again.",
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
                                       actions: [
                                         TextButton(
                                           onPressed: () => Navigator.pop(context),
@@ -463,11 +492,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
         floatingActionButton: FloatingActionButton.extended(
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            final reload = await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => CreateOrder()),
             );
+            if(reload == true) {
+              context.read<OrderViewModel>().getOrdersList();
+            }
           },
           icon: Icon(Icons.add, color: Colors.white,),
           label: Text("Create Order"),

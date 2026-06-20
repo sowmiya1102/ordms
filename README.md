@@ -1,17 +1,62 @@
-# ordms
+# Flutter Application
 
-A new Flutter project.
+A Flutter application structured using a clean architecture approach
+with separate layers for views, view models, repositories, services, and
+data models.
+
+## Project Structure
+
+lib/
+├── core/
+├── data/
+│   ├── models/
+│   ├── repositories/
+│   └── services/
+├── router/
+├── shared/
+├── view/   
+│   ├── auth/
+│   ├── dashboard/
+│   ├── home/
+│   ├── insights/
+│   └── orders/
+├── viewmodels/
+└── main.dart
+
+## Features
+
+-   User authentication
+-   Dashboard screen
+-   Home screen
+-   Insights module
+-   Order creation and management
+-   Repository and service layers
+-   State management with ViewModels
+-   Razorpay payment integration
+
+## Technologies
+
+-   Flutter
+-   Dart
+-   MVVM architecture
+-   Repository pattern
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Install dependencies
 
-A few resources to get you started if this is your first Flutter project:
+``` bash
+flutter pub get
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### Run the application
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+``` bash
+flutter run
+```
+
+## Build
+
+``` bash
+flutter build apk
+```

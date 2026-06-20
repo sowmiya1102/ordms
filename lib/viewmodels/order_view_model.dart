@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,7 @@ class OrderViewModel extends ChangeNotifier {
   CreateOrderModel? orderData;
   int selectedIndex = 0;
   String selectedCategory = "All";
+  StreamSubscription? _connectivitySubscription;
   TextEditingController searchController = TextEditingController();
 
   int get totalOrders => orderList.length;
@@ -32,6 +35,11 @@ class OrderViewModel extends ChangeNotifier {
   int get completedOrders => orderList.where((e) => e.ordStatus.toLowerCase() == "completed").length;
   int get cancelledOrders => orderList.where((e) => e.ordStatus.toLowerCase() == "cancelled").length;
   List<CreateOrderModel> get recentOrders => [...orderList].reversed.take(5).toList();
+
+  Future init() async {
+    initConnectivityListener();
+    await checkConnectivity();
+  }
 
   List<CreateOrderModel> get todayOrders {
     final today = DateTime.now();
@@ -47,7 +55,28 @@ class OrderViewModel extends ChangeNotifier {
 
   Future<bool> isOnline() async {
     final result = await Connectivity().checkConnectivity();
-    return result != ConnectivityResult.none;
+    return !(result.contains(ConnectivityResult.none) || result.isEmpty);
+  }
+
+  Future<void> checkConnectivity() async {
+    final result = await Connectivity().checkConnectivity();
+    isOffline = result.contains(ConnectivityResult.none) || result.isEmpty;
+    debugPrint("🔌 checkConnectivity() → result: $result, isOffline: $isOffline");
+    notifyListeners();
+  }
+
+  void initConnectivityListener() {
+    _connectivitySubscription?.cancel();
+
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((result) {
+      isOffline = result.contains(ConnectivityResult.none) || result.isEmpty;
+      debugPrint("🔌 Listener fired → result: $result, isOffline: $isOffline");
+      notifyListeners();
+    });
+  }
+
+  void disposeConnectivity() {
+    _connectivitySubscription?.cancel();
   }
 
   Map<String, int> get popularItems {
@@ -126,28 +155,21 @@ class OrderViewModel extends ChangeNotifier {
       isLoading1 = true;
       notifyListeners();
 
-      final online = await isOnline();
+      final remoteOrders = await _repository.getOrders();
 
-      if (online) {
-        final remoteOrders = await _repository.getOrders();
+      orderList = remoteOrders.where((o) => o.status == 1).toList();
+      orderFilterList = List.from(orderList);
 
-        orderList = remoteOrders.where((o) => o.status == 1).toList();
-        orderFilterList = List.from(orderList);
-
-        isOffline = false;
-
-        for (var order in orderList) {
-          orderBox.put(order.id, order);
-        }
-      } else {
-        orderList = orderBox.values.toList();
-        orderFilterList = List.from(orderList);
-        isOffline = true;
+      for (var order in orderList) {
+        orderBox.put(order.id, order);
       }
 
       return true;
     } catch (e) {
       debugPrint(e.toString());
+      orderList = orderBox.values.toList();
+      orderFilterList = List.from(orderList);
+
       return false;
     } finally {
       isLoading1 = false;
@@ -221,7 +243,7 @@ class OrderViewModel extends ChangeNotifier {
         eventDate: eventDate,
         eventTime: eventTime,
         notes: notes,
-        createdAt: orderData!.createdAt, // keep old created time
+        createdAt: orderData!.createdAt,
         status: status,
       );
 
